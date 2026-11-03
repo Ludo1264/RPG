@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'it.unicam.cs.mpgc.rpg126415'
+version = '1.0-SNAPSHOT'
+
+application {
+    mainClass = 'it.unicam.cs.mpgc.rpg126415.Main'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
