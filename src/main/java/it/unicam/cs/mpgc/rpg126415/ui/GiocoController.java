@@ -47,8 +47,19 @@ public class GiocoController {
         archivio.salva(avventuraCorrente);
     }
 
+    public String giocaTurno() {
+        if (avventuraCorrente == null) {
+            throw new IllegalStateException("Nessuna avventura attiva");
+        }
+        return avventuraCorrente.giocaTurno();
+    }
+
     public boolean esisteSalvataggio() {
         return archivio.esisteSalvataggio();
+    }
+
+    public boolean haAvventuraAttiva() {
+        return avventuraCorrente != null;
     }
 
     public Avventura getAvventuraCorrente() {

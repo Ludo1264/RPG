@@ -1,6 +1,9 @@
 package it.unicam.cs.mpgc.rpg126415.ui;
 
+import it.unicam.cs.mpgc.rpg126415.domain.model.Eroe;
+import it.unicam.cs.mpgc.rpg126415.domain.model.Nemico;
 import it.unicam.cs.mpgc.rpg126415.domain.service.Avventura;
+import it.unicam.cs.mpgc.rpg126415.domain.model.Incontro;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -50,8 +53,8 @@ public class VistaPrincipale {
         txtNome.setPromptText("Inserisci il nome dell'eroe...");
         txtNome.setMaxWidth(300);
 
-        RadioButton rbGuerriero = new RadioButton("Guerriero (Alta resistenza e difesa)");
-        RadioButton rbMago = new RadioButton("Mago (Attacco magico potente)");
+        RadioButton rbGuerriero = new RadioButton("Guerriero");
+        RadioButton rbMago = new RadioButton("Mago");
         ToggleGroup gruppoClasse = new ToggleGroup();
         rbGuerriero.setToggleGroup(gruppoClasse);
         rbMago.setToggleGroup(gruppoClasse);
@@ -73,9 +76,8 @@ public class VistaPrincipale {
 
         btnNuovaPartita.setOnAction(e -> {
             try {
-                Avventura avv = controller.avviaNuovaPartita(txtNome.getText(), rbGuerriero.isSelected());
-                lblMessaggio.setStyle("-fx-text-fill: #44bd32;");
-                lblMessaggio.setText("Avventura avviata per " + avv.getEroe().getNome() + "! (Arena in arrivo al prossimo commit)");
+                controller.avviaNuovaPartita(txtNome.getText(), rbGuerriero.isSelected());
+                mostraSchermataAvventura();
             } catch (IllegalArgumentException ex) {
                 lblMessaggio.setStyle("-fx-text-fill: #c23616;");
                 lblMessaggio.setText(ex.getMessage());
@@ -86,9 +88,9 @@ public class VistaPrincipale {
             try {
                 Optional<Avventura> caricata = controller.caricaPartitaSalvata();
                 if (caricata.isPresent()) {
-                    lblMessaggio.setStyle("-fx-text-fill: #44bd32;");
-                    lblMessaggio.setText("Partita caricata: " + caricata.get().getEroe().getNome());
+                    mostraSchermataAvventura();
                 } else {
+                    lblMessaggio.setStyle("-fx-text-fill: #c23616;");
                     lblMessaggio.setText("Nessun salvataggio trovato.");
                 }
             } catch (IOException ex) {
@@ -102,6 +104,127 @@ public class VistaPrincipale {
 
         boxCentrale.getChildren().addAll(lblBenvenuto, txtNome, boxClassi, boxPulsanti, lblMessaggio);
         root.setCenter(boxCentrale);
+    }
+
+    public void mostraSchermataAvventura() {
+        VBox boxAvventura = new VBox(16);
+        boxAvventura.setPadding(new Insets(25));
+        boxAvventura.setAlignment(Pos.TOP_CENTER);
+
+        Label lblStatoTorre = new Label();
+        lblStatoTorre.setFont(Font.font("System", FontWeight.BOLD, 16));
+
+        Label lblStatsEroe = new Label();
+        lblStatsEroe.setStyle("-fx-font-size: 13px;");
+
+        Label lblNemico = new Label();
+        lblNemico.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #b33939;");
+
+        VBox boxSchede = new VBox(8, lblStatoTorre, lblStatsEroe, lblNemico);
+        boxSchede.setAlignment(Pos.CENTER);
+        boxSchede.setPadding(new Insets(12));
+        boxSchede.setStyle("-fx-background-color: #f1f2f6; -fx-background-radius: 8;");
+
+        TextArea areaLog = new TextArea();
+        areaLog.setEditable(false);
+        areaLog.setPrefHeight(190);
+        areaLog.setWrapText(true);
+
+        Label lblFeedback = new Label();
+        lblFeedback.setStyle("-fx-font-weight: bold;");
+
+        Button btnAttacca = new Button("Attacca (Gioca Turno)");
+        btnAttacca.setStyle("-fx-background-color: #c23616; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 18;");
+
+        Button btnSalva = new Button("Salva Partita");
+        btnSalva.setStyle("-fx-background-color: #273c75; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 18;");
+
+        Button btnMenu = new Button("Menu Principale");
+        btnMenu.setStyle("-fx-padding: 10 18;");
+
+        Runnable aggiornaStato = () -> {
+            Avventura avv = controller.getAvventuraCorrente();
+            if (avv == null) {
+                return;
+            }
+
+            Eroe eroe = avv.getEroe();
+            int incontroNumero = Math.min(avv.getIndiceIncontroCorrente() + 1, avv.getTotaleIncontri());
+            lblStatoTorre.setText("Incontro " + incontroNumero + " di " + avv.getTotaleIncontri());
+
+            lblStatsEroe.setText(String.format(
+                    "%s | Liv. %d (XP: %d) | HP: %d/%d | Attacco: %d",
+                    eroe.getNome(),
+                    eroe.getLivello(),
+                    eroe.getPuntiEsperienza(),
+                    eroe.getPuntiVitaAttuali(),
+                    eroe.getPuntiVitaMassimi(),
+                    eroe.getDannoAttaccoBase()
+            ));
+
+            Incontro incontro = avv.getIncontroCorrente();
+            if (incontro != null) {
+                Nemico nemico = incontro.getNemico();
+                lblNemico.setText(String.format(
+                        "Nemico: %s — HP: %d/%d",
+                        nemico.getNomeNemico(),
+                        nemico.getPuntiVitaAttualiNemico(),
+                        nemico.getPuntiVitaMassimiNemico()
+                ));
+            } else if (avv.isCompletata()) {
+                lblNemico.setText("Hai conquistato la cima della Torre!");
+            } else {
+                lblNemico.setText("L'eroe è caduto in battaglia.");
+            }
+
+            btnAttacca.setDisable(avv.isTerminata());
+        };
+
+        Avventura avventuraIniziale = controller.getAvventuraCorrente();
+        if (avventuraIniziale != null) {
+            areaLog.appendText("Avventura iniziata per " + avventuraIniziale.getEroe().getNome() + "!\n");
+            if (avventuraIniziale.isTerminata()) {
+                areaLog.appendText("Questa partita è già terminata.\n");
+            }
+        }
+        aggiornaStato.run();
+
+        btnAttacca.setOnAction(e -> {
+            try {
+                String esito = controller.giocaTurno();
+                areaLog.appendText(esito + "\n");
+                aggiornaStato.run();
+
+                Avventura avv = controller.getAvventuraCorrente();
+                if (avv != null && avv.isCompletata()) {
+                    areaLog.appendText("=== VITTORIA! Tutti i sigilli sono stati superati! ===\n");
+                } else if (avv != null && avv.isSconfitta()) {
+                    areaLog.appendText("=== SCONFITTA! Torna al menu principale per riprovare. ===\n");
+                }
+            } catch (IllegalStateException ex) {
+                lblFeedback.setStyle("-fx-text-fill: #c23616;");
+                lblFeedback.setText(ex.getMessage());
+            }
+        });
+
+        btnSalva.setOnAction(e -> {
+            try {
+                controller.salvaPartita();
+                lblFeedback.setStyle("-fx-text-fill: #44bd32;");
+                lblFeedback.setText("Partita salvata con successo.");
+            } catch (IOException | IllegalStateException ex) {
+                lblFeedback.setStyle("-fx-text-fill: #c23616;");
+                lblFeedback.setText("Errore salvataggio: " + ex.getMessage());
+            }
+        });
+
+        btnMenu.setOnAction(e -> mostraSchermataIniziale());
+
+        HBox boxAzioni = new HBox(12, btnAttacca, btnSalva, btnMenu);
+        boxAzioni.setAlignment(Pos.CENTER);
+
+        boxAvventura.getChildren().addAll(boxSchede, boxAzioni, areaLog, lblFeedback);
+        root.setCenter(boxAvventura);
     }
 
     public Parent getRoot() {
