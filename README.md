@@ -40,4 +40,8 @@ Su Windows PowerShell usa:
 
 ## Uso di strumenti di AI
 
-Durante lo sviluppo ho utilizzato ChatGPT come supporto per confrontare idee sulle regole di gioco, sui personaggi e sul design dell’interfaccia, oltre che per chiarire concetti di Java e JavaFX e risolvere problemi. Le decisioni finali sul gioco e sulle modifiche da adottare sono state mie. La Wiki descrive nel dettaglio l’uso dell’AI.
+Ho utilizzato ChatGPT per:
+-chiarimenti su errori di compilazione e configurazione
+-suggerimenti architetturali
+L'intero progetto è stato comunque ideato, strutturato e sviluppato da me in totale autonomia. 
+La Wiki descrive nel dettaglio l'uso dell'AI.
