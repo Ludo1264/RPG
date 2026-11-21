@@ -1,20 +1,43 @@
 ﻿# La Torre dei Tre Sigilli
 
-Gioco di ruolo (RPG) a turni con interfaccia grafica JavaFX e salvataggio su file JSON, sviluppato per il corso di Metodologie di Programmazione (`it.unicam.cs.mpgc.rpg126415`). Permette di creare un eroe (**Guerriero** o **Mago**), scalare la Torre affrontando nemici e boss finali e salvare o caricare la partita.
+Gioco di ruolo a turni con interfaccia grafica JavaFX e salvataggio su file JSON, sviluppato per il corso di Metodologie di Programmazione. Il progetto appartiene al package it.unicam.cs.mpgc.rpg126415. Il giocatore crea un eroe, scegliendo tra **Guerriero** e **Mago**, e affronta Goblin, Scheletro e il boss finale.
+
+## Funzionalità
+
+- Creazione di un eroe o caricamento di una partita salvata.
+- Combattimenti a turni: l’eroe attacca per primo; se il nemico sopravvive, contrattacca.
+- Punti esperienza e avanzamento di livello.
+- Ricompense: ascia per il Guerriero, sfera di fuoco per il Mago e pozione curativa dopo lo Scheletro.
+- Salvataggio e caricamento della partita in formato JSON.
+
+Il salvataggio conserva le statistiche dell’eroe e l’incontro corrente. Se si salva durante uno scontro, al caricamento il nemico riparte dai suoi punti vita massimi.
 
 ## Come eseguire il progetto
 
 ### Prerequisiti
-- Java 21 
-- Gradle (oppure il wrapper `./gradlew` incluso nel progetto)
+
+- JDK 21, indicato dal toolchain configurato nel progetto.
+- Git, per clonare il repository.
+
+Il progetto include Gradle Wrapper 9.1.0, quindi non è necessario installare Gradle separatamente.
 
 ### Comandi
-- `git clone https://github.com/Ludo1264/RPG.git`
-- `cd RPG`
-- `./gradlew build`
-- `./gradlew run`
+
+Clona il repository e apri la cartella del progetto:
+
+git clone https://github.com/Ludo1264/RPG.git
+cd RPG
+
+Su Linux e macOS compila ed esegui l’applicazione con:
+
+./gradlew build
+./gradlew run
+
+Su Windows PowerShell usa:
+
+.\gradlew.bat build
+.\gradlew.bat run
 
 ## Uso di strumenti di AI
-Durante lo sviluppo ho utilizzato strumenti di AI generativa (come ChatGPT) come supporto per confrontare idee sulle meccaniche di gioco e sull'interfaccia, chiarire concetti di Java e JavaFX e risolvere alcuni errori. Il codice è stato compreso, adattato e testato personalmente, e tutte le decisioni finali sul progetto sono state mie.
 
-Per una descrizione più dettagliata sull'uso dell'AI, consultare la **Wiki** del repository.
+Durante lo sviluppo ho utilizzato ChatGPT come supporto per confrontare idee sulle regole di gioco, sui personaggi e sul design dell’interfaccia, oltre che per chiarire concetti di Java e JavaFX e risolvere problemi. Le decisioni finali sul gioco e sulle modifiche da adottare sono state mie. La Wiki descrive nel dettaglio l’uso dell’AI.
