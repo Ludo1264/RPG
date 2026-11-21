@@ -40,8 +40,6 @@ Su Windows PowerShell usa:
 
 ## Uso di strumenti di AI
 
-Ho utilizzato ChatGPT per:
--chiarimenti su errori di compilazione e configurazione
--suggerimenti architetturali
+Ho utilizzato ChatGPT per chiarimenti su errori di compilazione, configurazione e suggerimenti architetturali.
 L'intero progetto è stato comunque ideato, strutturato e sviluppato da me in totale autonomia. 
 La Wiki descrive nel dettaglio l'uso dell'AI.
